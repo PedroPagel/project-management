@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{6420
 		scripts\init.sql = scripts\init.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.Management.Tests.Unit", "tests\Project.Management.Tests.Unit\Project.Management.Tests.Unit.csproj", "{99949152-1082-4355-A518-B0EE9C76A5BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{D566CF0C-4021-473A-A2A9-A21E95D75886}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D566CF0C-4021-473A-A2A9-A21E95D75886}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D566CF0C-4021-473A-A2A9-A21E95D75886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99949152-1082-4355-A518-B0EE9C76A5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99949152-1082-4355-A518-B0EE9C76A5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99949152-1082-4355-A518-B0EE9C76A5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99949152-1082-4355-A518-B0EE9C76A5BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,5 +64,6 @@ Global
 		{8C97B5E3-8EE2-41E7-9740-4711DF38A211} = {9D29D9A3-3CCC-41D7-B1C5-BE651C20377A}
 		{65AB4976-3D16-4CF5-B433-9B056BB85BB3} = {9D29D9A3-3CCC-41D7-B1C5-BE651C20377A}
 		{D566CF0C-4021-473A-A2A9-A21E95D75886} = {9D29D9A3-3CCC-41D7-B1C5-BE651C20377A}
+		{99949152-1082-4355-A518-B0EE9C76A5BD} = {FE42940D-6C23-49DC-8F20-0D071671D7E7}
 	EndGlobalSection
 EndGlobal

@@ -1,3 +1,4 @@
+using Project.Management.Api.Mappings;
 using Project.Management.Api.Middlewares;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Extensions;
@@ -5,7 +6,7 @@ using Project.Management.ServiceDefaults;
 
 namespace Project.Management.Api;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
@@ -15,14 +16,17 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
         builder.Services.ConfigureDataLayer(builder.Configuration);
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
+
         builder.Services.AddRepositories();
+        builder.Services.AddServices();
+
         builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
 
         var app = builder.Build();
 
         app.MapDefaultEndpoints();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
