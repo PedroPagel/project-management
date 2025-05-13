@@ -2,5 +2,8 @@
 
 namespace Project.Management.Domain.Repositories
 {
-    public interface IProjectMemberRepository : IRepository<ProjectMember> { }
+    public interface IProjectMemberRepository : IRepository<ProjectMember>
+    {
+        public Task<bool> Delete(Guid userId, Guid id);
+    }
 }
