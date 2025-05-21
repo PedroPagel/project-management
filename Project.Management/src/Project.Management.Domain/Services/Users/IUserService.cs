@@ -1,4 +1,5 @@
 ﻿using Project.Management.Domain.Entities;
+using Project.Management.Domain.Services.Users.Models;
 
 namespace Project.Management.Domain.Services.Users
 {
@@ -6,8 +7,8 @@ namespace Project.Management.Domain.Services.Users
     {
         Task<User> GetUserById(Guid id);
         Task<IEnumerable<User>> GetAllUsers();
-        Task<User> Create(User user);
-        Task<User> Update(User user);
+        Task<User> Create(UserCreationRequest request);
+        Task<User> Update(UserUpdateRequest request);
         Task<bool> Delete(Guid id);
     }
 
