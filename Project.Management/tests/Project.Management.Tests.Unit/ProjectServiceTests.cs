@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects;
@@ -15,7 +16,7 @@ namespace Project.Management.Tests.Unit
         {
             _repoMock = new Mock<IProjectRepository>();
             _notifMock = new Mock<INotificator>();
-            _service = new ProjectService(_notifMock.Object, _repoMock.Object);
+            _service = new ProjectService(_notifMock.Object, _repoMock.Object, new Mock<ILogger<ProjectService>>().Object);
         }
 
         [Fact]

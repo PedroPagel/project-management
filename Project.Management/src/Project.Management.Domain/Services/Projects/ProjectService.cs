@@ -1,10 +1,11 @@
-﻿using Project.Management.Domain.Repositories;
+﻿using Microsoft.Extensions.Logging;
+using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 
 namespace Project.Management.Domain.Services.Projects
 {
-    public class ProjectService(INotificator notificator, IProjectRepository projectRepository)
-    : BaseService(notificator), IProjectService
+    public class ProjectService(INotificator notificator, IProjectRepository projectRepository, ILogger<ProjectService> logger)
+    : BaseService(notificator, logger), IProjectService
     {
         private readonly IProjectRepository _projectRepository = projectRepository;
 

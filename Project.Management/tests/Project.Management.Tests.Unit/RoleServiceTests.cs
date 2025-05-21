@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
@@ -16,7 +17,7 @@ namespace Project.Management.Tests.Unit
         {
             _repoMock = new Mock<IRoleRepository>();
             _notificatorMock = new Mock<INotificator>();
-            _service = new RoleService(_notificatorMock.Object, _repoMock.Object);
+            _service = new RoleService(_notificatorMock.Object, _repoMock.Object, new Mock<ILogger<RoleService>>().Object);
         }
 
         [Fact]
@@ -79,16 +80,15 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task GetAll_ShouldReturnRoles()
         {
-            _repoMock.Setup(r => r.GetAll()).ReturnsAsync(new List<Role>
-        {
-            new Role { Name = "Developer" },
-            new Role { Name = "Analyst" }
-        });
+            _repoMock.Setup(r => r.GetAll()).ReturnsAsync(
+            [
+                new Role { Name = "Developer" },
+                new Role { Name = "Analyst" }
+            ]);
 
             var result = await _service.GetAll();
 
             Assert.Equal(2, result.Count());
         }
     }
-
 }
