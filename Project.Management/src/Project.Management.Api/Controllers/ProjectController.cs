@@ -1,52 +1,82 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
+using Project.Management.Domain.Entities;
+using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects;
+using Project.Management.Domain.Services.Projects.Models;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class ProjectController(IProjectService service, IMapper mapper) : ControllerBase
+    [Route("api/project")]
+    public class ProjectController(INotificator notificator, IProjectService service, IMapper mapper) : BaseController(notificator)
     {
         private readonly IProjectService _service = service;
         private readonly IMapper _mapper = mapper;
 
-        [HttpGet]
+        /// <summary>
+        /// Get all projects in the system
+        /// </summary>
+        /// <returns>Projects</returns>
+        [HttpGet("all-projects")]
         public async Task<ActionResult<IEnumerable<ProjectDto>>> GetAll()
         {
-            var projects = await _service.GetAll();
-            return Ok(_mapper.Map<IEnumerable<ProjectDto>>(projects));
+            var projects = _mapper.Map<IEnumerable<ProjectDto>>(await _service.GetAll());
+
+            return await CustomResponse(projects);
         }
 
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Get project by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Project</returns>
+        [HttpGet("project-by-id/{id}")]
         public async Task<ActionResult<ProjectDto>> GetById(Guid id)
         {
-            var project = await _service.GetById(id);
-            return project is null ? NotFound() : Ok(_mapper.Map<ProjectDto>(project));
+            var project = _mapper.Map<ProjectDto>(await _service.GetById(id));
+
+            return await CustomResponse(project);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ProjectDto>> Create(ProjectDto dto)
+        /// <summary>
+        /// Add a project to the system
+        /// </summary>
+        /// <param name="request">Project details</param>
+        /// <returns>New project</returns>
+        [HttpPost("add")]
+        public async Task<ActionResult<ProjectDto>> Create(ProjectCreationRequest request)
         {
-            var created = await _service.Create(_mapper.Map<Domain.Entities.Project>(dto));
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, _mapper.Map<ProjectDto>(created));
+            var created = _mapper.Map<ProjectDto>(await _service.Create(request));
+
+            return await CustomResponse(created);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectDto>> Update(Guid id, ProjectDto dto)
+        /// <summary>
+        /// Update an existing project
+        /// </summary>
+        /// <param name="request">Project details</param>
+        /// <returns>Updated project</returns>
+        [HttpPut("update")]
+        public async Task<ActionResult<ProjectDto>> Update(ProjectUpdateRequest request)
         {
-            if (id != dto.Id) 
-                return BadRequest();
+            var updated = _mapper.Map<ProjectDto>(await _service.Update(request));
 
-            var updated = await _service.Update(_mapper.Map<Domain.Entities.Project>(dto));
-            return Ok(_mapper.Map<ProjectDto>(updated));
+            return await CustomResponse(updated);
         }
 
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// Delete a project from the system
+        /// </summary>
+        /// <param name="id">Project id</param>
+        /// <returns>True if deleted</returns>
+        [HttpDelete("delete-by-id/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return await _service.Delete(id) ? NoContent() : NotFound();
+            var deletedProject = await _service.GetById(id);
+
+            return await CustomResponse(deletedProject);
         }
     }
 

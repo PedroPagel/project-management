@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Project.Management.Domain.Entities;
 using Project.Management.Domain.Services.Notificator;
 
 namespace Project.Management.Domain.Services

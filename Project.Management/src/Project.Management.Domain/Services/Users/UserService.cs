@@ -91,7 +91,7 @@ namespace Project.Management.Domain.Services.Users
 
                 if (user == null)
                 {
-                    NotifyErrorNotFound($"User found with ID {request.Id} for proceeding to update");
+                    NotifyErrorNotFound($"User not found with ID {request.Id} for proceeding to update");
                     return null;
                 }
 

@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Project.Management.Domain.Entities;
 
 namespace Project.Management.Domain.Extensions
 {
@@ -24,22 +23,6 @@ namespace Project.Management.Domain.Extensions
             if (!Equals(currentValue, newValue))
             {
                 propertyInfo.SetValue(entity, newValue);
-            }
-
-            return entity;
-        }
-
-        public static Entity UpdateIfDifferent2(this Entity entity, Type sourceProperty, object propertyValue1)
-        {
-            string name = sourceProperty.Name;
-
-           var valueDestination = sourceProperty.GetProperty(name)?.GetValue(entity, null);
-
-            if (valueDestination != propertyValue1)
-            {
-                var property = entity.GetType().GetProperty(name);
-
-                property?.SetValue(entity, propertyValue1);
             }
 
             return entity;
