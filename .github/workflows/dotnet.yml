@@ -1,9 +1,6 @@
 # Build, test, and analyze a .NET project with SonarCloud
 # -------------------------------------------------------
 # • Requires a repository secret named SONAR_TOKEN
-# • Replace <ORG_KEY> with your SonarCloud organization key
-# • Replace <PROJECT_KEY> with your SonarCloud project key
-#   (typically "<org>_<repo>")
 #
 name: .NET + SonarCloud
 
@@ -68,7 +65,7 @@ jobs:
         run: |
           ./.sonar/scanner/dotnet-sonarscanner \
             begin \
-            /k:"PedroPagel_project-management" \
+            /k:"project-management" \
             /o:"PedroPagel" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${SONAR_TOKEN}"
