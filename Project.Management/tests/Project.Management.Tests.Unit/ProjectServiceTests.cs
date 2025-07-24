@@ -23,7 +23,13 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task Create_ShouldCallRepository()
         {
-            var request = new ProjectCreationRequest { Name = "Test", StartDate = DateTime.UtcNow };
+            var request = new ProjectCreationRequest 
+            { 
+                Name = "Test", 
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddYears(1),
+                Description = "DescTest"
+            };
 
             _repoMock.Setup(r => r.Create(It.IsAny<Domain.Entities.Project>()))
                 .ReturnsAsync((Domain.Entities.Project p) =>

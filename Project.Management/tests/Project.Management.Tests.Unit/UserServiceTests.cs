@@ -52,7 +52,7 @@ namespace Project.Management.Tests.Unit
             var users = new List<User> { new() { FullName = "Bob" } };
             _repoMock.Setup(r => r.GetAll()).ReturnsAsync(users);
 
-            var result = await _service.GetAllUsers();
+            var result = await _service.GetAll();
 
             Assert.Single(result);
         }

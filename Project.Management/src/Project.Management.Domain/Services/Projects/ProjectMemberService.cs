@@ -2,11 +2,12 @@
 using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
+using System.Linq.Expressions;
 
 namespace Project.Management.Domain.Services.Projects
 {
     public class ProjectMemberService(INotificator notificator, IProjectMemberRepository memberRepository, ILogger<ProjectMemberService> logger)
-    : BaseService(notificator, logger), IProjectMemberService
+    : BaseRepositoryService<ProjectMember>(notificator, logger, memberRepository), IProjectMemberService
     {
         private readonly IProjectMemberRepository _memberRepository = memberRepository;
 
@@ -21,7 +22,14 @@ namespace Project.Management.Domain.Services.Projects
             return await _memberRepository.FirstOrDefault(pm => pm.UserId == userId && pm.Id == projectId);
         }
 
-        public async Task<IEnumerable<ProjectMember>> GetAll() => await _memberRepository.GetAll();
-    }
+        public Task<ProjectMember> GetProject(Expression<Func<ProjectMember, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<IEnumerable<ProjectMember>> GetProjects(Expression<Func<ProjectMember, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
