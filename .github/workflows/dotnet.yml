@@ -1,7 +1,6 @@
 # Build, test, and analyze a .NET project with SonarCloud
-# -------------------------------------------------------
-# • Requires a repository secret named SONAR_TOKEN
-#
+# Requires a repository secret named SONAR_TOKEN
+
 name: .NET + SonarCloud
 
 on:
@@ -13,29 +12,29 @@ on:
 
 jobs:
   build:
-    name: Build, Test & SonarCloud Analyze
-    runs-on: ubuntu-latest          # Ubuntu is fine; SonarCloud scanner works on Linux
+    name: Build, Test & SonarCloud Analyze
+    runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout — depth 0 so Sonar sees full history for blame/coverage
+      # 1️⃣ Checkout code
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Required by SonarCloud for blame/coverage
 
-      # 2️⃣ .NET SDK
-      - name: Setup .NET SDK
+      # 2️⃣ Setup .NET SDK
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # 3️⃣ JDK (needed by Sonar scanner)
-      - name: Setup JDK 17
+      # 3️⃣ Setup JDK (required by SonarCloud scanner)
+      - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: 17
 
-      # 4️⃣ Cache SonarCloud packages
+      # 4️⃣ Cache SonarCloud packages
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
@@ -43,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # 5️⃣ Cache / install dotnet‑sonarscanner
+      # 5️⃣ Cache and install SonarCloud scanner
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v4
@@ -58,28 +57,29 @@ jobs:
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
 
-      # 6️⃣ BEGIN SonarCloud analysis
-      - name: SonarCloud – begin analysis
+      # ✅ FIXED: Correct organization key (`pedropagel`, all lowercase)
+      - name: SonarCloud – begin analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner \
-            begin \
+          ./.sonar/scanner/dotnet-sonarscanner begin \
             /k:"PedroPagel_project-management" \
             /o:"pedropagel" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${SONAR_TOKEN}"
 
-      # 7️⃣ Restore, build, test
+      # 7️⃣ Build and test
       - name: Restore dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --no-restore
+
       - name: Test
         run: dotnet test --no-build --verbosity normal
 
-      # 8️⃣ END SonarCloud analysis (uploads report)
-      - name: SonarCloud – end analysis
+      # 8️⃣ End SonarCloud analysis
+      - name: SonarCloud – end analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
