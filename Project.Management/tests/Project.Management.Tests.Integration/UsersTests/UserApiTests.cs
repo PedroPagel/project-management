@@ -51,7 +51,7 @@ namespace Project.Management.Tests.Integration.UsersTests
             var content = await GetAsync<string>(url);
 
             // Assert
-            Assert.Contains("Invalid user Id provided", content);
+            Assert.Contains("Invalid User Id provided", content);
         }
 
         [Fact]
