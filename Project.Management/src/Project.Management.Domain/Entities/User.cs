@@ -8,5 +8,4 @@
 
         public ICollection<ProjectMember> ProjectMemberships { get; set; }
     }
-
 }
