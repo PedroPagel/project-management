@@ -67,10 +67,10 @@ jobs:
 
       # 7️⃣ Restore, Build, Test with explicit projects and solution
       - name: Restore dependencies
-        run: dotnet src/restore Project.Management.sln
+        run: dotnet restore src/Project.Management.sln
 
       - name: Build solution
-        run: dotnet src/build Project.Management.sln --no-restore
+        run: dotnet build src/Project.Management.sln --no-restore
 
       - name: Run Unit Tests
         run: dotnet test src/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
