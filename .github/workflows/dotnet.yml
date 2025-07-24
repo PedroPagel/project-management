@@ -54,6 +54,14 @@ jobs:
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
 
+      # 🔍 Optional: Debug file structure if needed
+      - name: 🔍 Debug – list files
+        run: |
+          echo "Listing current directory:"
+          ls -la
+          echo "Recursively listing:"
+          find . -name "*.sln"
+
       # 6️⃣ BEGIN SonarCloud Analysis
       - name: SonarCloud – begin analysis
         env:
@@ -65,18 +73,18 @@ jobs:
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${SONAR_TOKEN}"
 
-      # 7️⃣ Restore, Build, Test with explicit projects and solution
+      # 7️⃣ Restore, Build, Test with correct paths
       - name: Restore dependencies
-        run: dotnet restore Project.Management.sln
+        run: dotnet restore Project.Management/Project.Management.sln
 
       - name: Build solution
-        run: dotnet build Project.Management.sln --no-restore
+        run: dotnet build Project.Management/Project.Management.sln --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
+        run: dotnet test Project.Management/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
 
       - name: Run Integration Tests
-        run: dotnet test Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
+        run: dotnet test Project.Management/Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
 
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
