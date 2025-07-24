@@ -34,7 +34,7 @@ namespace Project.Management.Domain.Services.Projects
                 _logger.LogInformation("Project creation validation passed for project {Name}", request.Name);
                 var (project, hasConflict) = await GetOnGoingProject(request.Name);
 
-                if (hasConflict || project is null)
+                if (hasConflict || project != null)
                 {
                     return null;
                 }
