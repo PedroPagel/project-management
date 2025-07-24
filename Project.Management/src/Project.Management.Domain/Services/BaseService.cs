@@ -9,7 +9,7 @@ namespace Project.Management.Domain.Services
     public abstract class BaseService(INotificator notificator, ILogger<BaseService> logger)
     {
         private readonly INotificator _notificator = notificator;
-        private readonly ILogger<BaseService> _logger = logger;
+        internal readonly ILogger<BaseService> _logger = logger;
 
         private void StatusCodeErrorNotify(string message, int statusCode)
         {

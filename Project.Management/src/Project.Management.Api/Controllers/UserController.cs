@@ -21,7 +21,7 @@ namespace Project.Management.Api.Controllers
         [HttpGet("all-users")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
         {
-            var users = _mapper.Map<IEnumerable<UserDto>>(await _service.GetAllUsers());
+            var users = _mapper.Map<IEnumerable<UserDto>>(await _service.GetAll());
 
             return await CustomResponse(users);
         }
@@ -34,7 +34,7 @@ namespace Project.Management.Api.Controllers
         [HttpGet("user-by-id/{id}")]
         public async Task<ActionResult<UserDto>> GetById(Guid id)
         {
-            var user = _mapper.Map<UserDto>(await _service.GetUserById(id));
+            var user = _mapper.Map<UserDto>(await _service.GetById(id));
 
             return await CustomResponse(user);
         }
