@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Project.Management.Domain.Entities;
 using Project.Management.Domain.Extensions;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
@@ -9,15 +8,12 @@ using Project.Management.Domain.Services.Projects.Validators;
 namespace Project.Management.Domain.Services.Projects
 {
     public class ProjectService(INotificator notificator, IProjectRepository projectRepository, ILogger<ProjectService> logger)
-    : BaseService(notificator, logger), IProjectService
+        : BaseRepositoryService<Entities.Project>(notificator, logger, projectRepository), IProjectService
     {
-        private readonly IProjectRepository _projectRepository = projectRepository;
-        private readonly ILogger<ProjectService> _logger = logger;
-
         private async Task<(Entities.Project, bool HasConflict)> GetOnGoingProject(string name)
         {
             _logger.LogInformation("Fetching ongoing project with name {Name}", name);
-            var project = await _projectRepository.FirstOrDefault(p => p.Name.Equals(name) &&
+            var project = await _repository.FirstOrDefault(p => p.Name.Equals(name) &&
                 !(p.Status == Enums.ProjectStatus.Completed || p.Status == Enums.ProjectStatus.Cancelled));
 
             if (project != null)
@@ -38,12 +34,12 @@ namespace Project.Management.Domain.Services.Projects
                 _logger.LogInformation("Project creation validation passed for project {Name}", request.Name);
                 var (project, hasConflict) = await GetOnGoingProject(request.Name);
 
-                if (hasConflict || project is null)
+                if (hasConflict || project != null)
                 {
                     return null;
                 }
 
-                return await _projectRepository.Create(new Entities.Project()
+                return await _repository.Create(new Entities.Project()
                 {
                     Name = request.Name,
                     Description = request.Description,
@@ -53,14 +49,14 @@ namespace Project.Management.Domain.Services.Projects
             }
 
             _logger.LogInformation("Project creation failed due to validation errors");
-            return null;;
+            return null;
         }
 
         public async Task<Entities.Project> Update(ProjectUpdateRequest request)
         {
             _logger.LogInformation("Updating project with ID {Id}", request.Id);
 
-            var projectById = await _projectRepository.GetById(request.Id);
+            var projectById = await _repository.GetById(request.Id);
 
             if (projectById == null)
             {
@@ -84,18 +80,11 @@ namespace Project.Management.Domain.Services.Projects
                 project.UpdateIfDifferent(u => u.StartDate, request.StartDate);
                 project.UpdateIfDifferent(u => u.EndDate, request.EndDate);
 
-                return await _projectRepository.Update(project);
+                return await _repository.Update(project);
             }
 
             _logger.LogInformation("User update failed due to validation errors");
             return null;
         }
-
-        public async Task<bool> Delete(Guid id) => await _projectRepository.Delete(id) > 0;
-
-        public async Task<Entities.Project> GetById(Guid id) => await _projectRepository.GetById(id);
-
-        public async Task<IEnumerable<Entities.Project>> GetAll() => await _projectRepository.GetAll();
     }
-
 }
