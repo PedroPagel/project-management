@@ -65,7 +65,7 @@ jobs:
         run: |
           ./.sonar/scanner/dotnet-sonarscanner \
             begin \
-            /k:"project-management" \
+            /k:"PedroPagel_project-management" \
             /o:"PedroPagel" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${SONAR_TOKEN}"
