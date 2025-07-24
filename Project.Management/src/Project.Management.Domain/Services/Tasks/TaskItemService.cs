@@ -1,11 +1,12 @@
-﻿using Project.Management.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 
 namespace Project.Management.Domain.Services.Tasks
 {
-    public class TaskItemService(INotificator notificator, ITaskItemRepository taskItemRepository)
-    : BaseService(notificator), ITaskItemService
+    public class TaskItemService(INotificator notificator, ITaskItemRepository taskItemRepository, ILogger<TaskItemService> logger)
+    : BaseService(notificator, logger), ITaskItemService
     {
         private readonly ITaskItemRepository _taskItemRepository = taskItemRepository;
 

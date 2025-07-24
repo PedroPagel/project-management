@@ -25,5 +25,4 @@ namespace Project.Management.Infrastructure.Data.Mappings
                 .IsRequired();
         }
     }
-
 }
