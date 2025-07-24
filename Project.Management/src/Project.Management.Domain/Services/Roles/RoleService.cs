@@ -1,11 +1,12 @@
-﻿using Project.Management.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 
 namespace Project.Management.Domain.Services.Roles
 {
-    public class RoleService(INotificator notificator, IRoleRepository roleRepository)
-     : BaseService(notificator), IRoleService
+    public class RoleService(INotificator notificator, IRoleRepository roleRepository, ILogger<RoleService> logger)
+     : BaseService(notificator, logger), IRoleService
     {
         private readonly IRoleRepository _roleRepository = roleRepository;
 

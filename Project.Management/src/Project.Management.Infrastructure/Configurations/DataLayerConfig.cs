@@ -7,12 +7,20 @@ namespace Project.Management.Infrastructure.Configurations
 {
     public static class DataLayerConfig
     {
-        public static IServiceCollection ConfigureDataLayer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureDataLayer(this IServiceCollection services, IConfiguration configuration, bool development)
         {
-            var connectionString = configuration["ProjectManagement:ConnectionString"];
+            if (development)
+            {
+                services.AddDbContext<ProjectManagementDbContext>(options =>
+                options.UseInMemoryDatabase("DevInMemoryDb"));
+
+                return services;
+            }
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ProjectManagementDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseNpgsql(connectionString));
 
             return services;
         }
