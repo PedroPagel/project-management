@@ -65,15 +65,18 @@ jobs:
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${SONAR_TOKEN}"
 
-      # 7️⃣ Restore, Build, Test
+      # 7️⃣ Restore, Build, Test with explicit projects and solution
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Project.Management.sln
 
-      - name: Build
-        run: dotnet build --no-restore
+      - name: Build solution
+        run: dotnet build Project.Management.sln --no-restore
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+      - name: Run Unit Tests
+        run: dotnet test Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
+
+      - name: Run Integration Tests
+        run: dotnet test Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
 
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
