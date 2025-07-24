@@ -5,8 +5,8 @@ namespace Project.Management.Domain.Services.Users
 {
     public interface IUserService
     {
-        Task<User> GetUserById(Guid id);
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetById(Guid id);
+        Task<IEnumerable<User>> GetAll();
         Task<User> Create(UserCreationRequest request);
         Task<User> Update(UserUpdateRequest request);
         Task<bool> Delete(Guid id);

@@ -18,7 +18,7 @@ namespace Project.Management.Domain.Services.Projects.Validators
 
             RuleFor(user => user.StartDate)
                 .NotEmpty()
-                .GreaterThanOrEqualTo(DateTime.UtcNow)
+                .GreaterThanOrEqualTo(DateTime.UtcNow.AddMinutes(-1))
                 .WithMessage("Start date cannot be in the past.");
 
             RuleFor(user => user.EndDate)

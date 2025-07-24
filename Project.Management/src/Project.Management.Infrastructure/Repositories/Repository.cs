@@ -24,6 +24,9 @@ namespace Project.Management.Infrastructure.Repositories
         {
             var entity = await DbSet.FirstOrDefaultAsync(e => e.Id == id);
 
+            if (entity is null) 
+                return 0;
+
             DbContext.Remove(entity);
             return await DbContext.SaveChangesAsync();
         }
