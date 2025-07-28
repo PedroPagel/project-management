@@ -52,6 +52,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(created);
         }
 
+        /// <summary>
+        /// Update an user in the system
+        /// </summary>
+        /// <param name="request">Basic user details</param>
+        /// <returns>User</returns>
         [HttpPut("update")]
         public async Task<ActionResult<UserDto>> Update(UserUpdateRequest request)
         {
