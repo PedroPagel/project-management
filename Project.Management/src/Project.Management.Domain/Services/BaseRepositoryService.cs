@@ -2,9 +2,11 @@
 using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Domain.Services
 {
+    [ExcludeFromCodeCoverage]
     public abstract class BaseRepositoryService<TEntity>(INotificator notificator, ILogger<BaseService> logger, IRepository<TEntity> repository)
         : BaseService(notificator, logger) where TEntity : Entity
     {
