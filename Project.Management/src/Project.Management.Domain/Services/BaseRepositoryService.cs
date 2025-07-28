@@ -13,6 +13,13 @@ namespace Project.Management.Domain.Services
         public virtual async Task<bool> Delete(Guid id)
         {
             _logger.LogInformation("Deleting {Entity} with ID {Id}", typeof(TEntity).Name, id);
+
+            if (id == Guid.Empty)
+            {
+                NotifyErrorBadRequest($"Invalid {typeof(TEntity).Name} Id provided");
+                return false;
+            }
+
             var entity = await _repository.Delete(id);
 
             if (entity is 0)
