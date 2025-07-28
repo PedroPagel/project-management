@@ -77,6 +77,12 @@ jobs:
 
       - name: Run Integration Tests
         run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
+      
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: tests/CoverageResults/
 
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
