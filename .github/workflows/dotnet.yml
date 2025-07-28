@@ -73,7 +73,7 @@ jobs:
         run: dotnet build Project.Management/Project.Management.sln --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
+        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj /p:CollectCoverage=true /p:CoverletOutput="../../CoverageResults/" /p:MergeWith="../../CoverageResults/coverage.json" /p:CoverletOutputFormat=\"opencover,json\" -m:1
 
       - name: Run Integration Tests
         run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
@@ -85,4 +85,3 @@ jobs:
         run: |
           ./.sonar/scanner/dotnet-sonarscanner end \
             /d:sonar.token="${SONAR_TOKEN}"
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
