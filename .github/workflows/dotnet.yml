@@ -73,10 +73,10 @@ jobs:
         run: dotnet build Project.Management/Project.Management.sln --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test Project.Management.Tests.Unit.csproj --no-build --verbosity normal
+        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
 
       - name: Run Integration Tests
-        run: dotnet test Project.Management.Tests.Integration.csproj --no-build --verbosity normal
+        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
 
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
