@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Management.Domain.Entities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Infrastructure.Data
 {
+    [ExcludeFromCodeCoverage]
     public partial class ProjectManagementDbContext(DbContextOptions<ProjectManagementDbContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
