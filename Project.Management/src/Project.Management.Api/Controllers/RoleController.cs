@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
-using Project.Management.Domain.Entities;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Roles;
 using Project.Management.Domain.Services.Roles.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
     [Route("api/role")]
+    [ExcludeFromCodeCoverage]
     public class RoleController(IRoleService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IRoleService _service = service;

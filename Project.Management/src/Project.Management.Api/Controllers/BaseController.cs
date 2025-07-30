@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Management.Domain.Services.Notificator;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class BaseController(INotificator notificator) : ControllerBase
     {
         private readonly INotificator _notificator = notificator;

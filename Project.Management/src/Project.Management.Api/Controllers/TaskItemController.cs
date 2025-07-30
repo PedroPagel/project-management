@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
 using Project.Management.Domain.Entities;
 using Project.Management.Domain.Services.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ExcludeFromCodeCoverage]
     public class TaskItemController(ITaskItemService service, IMapper mapper) : ControllerBase
     {
         private readonly ITaskItemService _service = service;
