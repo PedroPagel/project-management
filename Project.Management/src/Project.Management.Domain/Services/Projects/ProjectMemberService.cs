@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace Project.Management.Domain.Services.Projects
 {
     public class ProjectMemberService(INotificator notificator, IProjectMemberRepository memberRepository, ILogger<ProjectMemberService> logger)
-    : BaseRepositoryService<ProjectMember>(notificator, logger, memberRepository), IProjectMemberService
+        : BaseRepositoryService<ProjectMember>(notificator, logger, memberRepository), IProjectMemberService
     {
         private readonly IProjectMemberRepository _memberRepository = memberRepository;
 

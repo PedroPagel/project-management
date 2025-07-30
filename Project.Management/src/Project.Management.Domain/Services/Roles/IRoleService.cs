@@ -1,14 +1,11 @@
 ﻿using Project.Management.Domain.Entities;
+using Project.Management.Domain.Services.Roles.Models;
 
 namespace Project.Management.Domain.Services.Roles
 {
-    public interface IRoleService
+    public interface IRoleService : IBaseRepositoryService<Role>
     {
-        Task<Role> Create(Role role);
-        Task<Role> Update(Role role);
-        Task<bool> Delete(Guid id);
-        Task<Role> GetById(Guid id);
-        Task<IEnumerable<Role>> GetAll();
+        Task<Role> Create(RoleCreateRequest request);
+        Task<Role> Update(RoleUpdateRequest request);
     }
-
 }

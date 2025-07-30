@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Project.Management.Domain.Entities;
 using Project.Management.Domain.Extensions;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
@@ -55,6 +56,12 @@ namespace Project.Management.Domain.Services.Projects
         public async Task<Entities.Project> Update(ProjectUpdateRequest request)
         {
             _logger.LogInformation("Updating project with ID {Id}", request.Id);
+
+            if (request.Id == Guid.Empty)
+            {
+                NotifyErrorBadRequest($"Invalid project Id provided");
+                return null;
+            }
 
             var projectById = await _repository.GetById(request.Id);
 

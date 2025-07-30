@@ -3,9 +3,11 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Project.Management.Domain.Services.Notificator;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Domain.Services
 {
+    [ExcludeFromCodeCoverage]
     public abstract class BaseService(INotificator notificator, ILogger<BaseService> logger)
     {
         private readonly INotificator _notificator = notificator;

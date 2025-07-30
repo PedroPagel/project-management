@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger, IWebHostEnvironment webHostEnvironment) : IMiddleware
     {
         private readonly ILogger<ExceptionHandlerMiddleware> _logger = logger;

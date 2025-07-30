@@ -4,10 +4,12 @@ using Project.Management.Api.Middlewares;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Data;
 using Project.Management.Infrastructure.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api;
 
-public class Program
+[ExcludeFromCodeCoverage]
+public static class Program
 {
     public static void Main(string[] args)
     {

@@ -4,6 +4,7 @@ using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Roles;
+using Project.Management.Domain.Services.Roles.Models;
 
 namespace Project.Management.Tests.Unit
 {
@@ -23,7 +24,7 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task Create_ShouldCallRepository_AndReturnRole()
         {
-            var role = new Role { Name = "Developer" };
+            var role = new RoleCreateRequest { Name = "Developer" };
 
             _repoMock.Setup(r => r.Create(It.IsAny<Role>()))
                 .ReturnsAsync((Role r) =>
@@ -44,11 +45,18 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task Update_ShouldCallRepository_AndReturnUpdatedRole()
         {
-            var role = new Role { Id = Guid.NewGuid(), Name = "Tester" };
+            var roleRequest = new RoleUpdateRequest { Id = Guid.NewGuid(), Name = "Tester" };
 
+            var role = new Role()
+            {
+                Id = roleRequest.Id,
+                Name = "Quality"
+            };
+
+            _repoMock.Setup(r => r.GetById(roleRequest.Id)).ReturnsAsync(role);
             _repoMock.Setup(r => r.Update(role)).ReturnsAsync(role);
 
-            var result = await _service.Update(role);
+            var result = await _service.Update(roleRequest);
 
             Assert.Equal("Tester", result.Name);
             _repoMock.Verify(r => r.Update(role), Times.Once);

@@ -4,9 +4,11 @@ using Project.Management.Domain.Services.Projects;
 using Project.Management.Domain.Services.Roles;
 using Project.Management.Domain.Services.Tasks;
 using Project.Management.Domain.Services.Users;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Infrastructure.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class ServicesColletionExtensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services)

@@ -4,11 +4,13 @@ using Project.Management.Api.Dtos;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Users;
 using Project.Management.Domain.Services.Users.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
     [Route("api/user")]
+    [ExcludeFromCodeCoverage]
     public class UserController(IUserService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IUserService _service = service;
@@ -52,6 +54,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(created);
         }
 
+        /// <summary>
+        /// Update an user in the system
+        /// </summary>
+        /// <param name="request">Basic user details</param>
+        /// <returns>User</returns>
         [HttpPut("update")]
         public async Task<ActionResult<UserDto>> Update(UserUpdateRequest request)
         {

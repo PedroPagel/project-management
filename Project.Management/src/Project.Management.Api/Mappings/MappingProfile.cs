@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Project.Management.Api.Dtos;
 using Project.Management.Domain.Entities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Mappings
 {
+    [ExcludeFromCodeCoverage]
     public class MappingProfile : Profile
     {
         public MappingProfile()
