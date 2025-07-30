@@ -2,9 +2,9 @@ name: .NET + SonarCloud
 
 on:
   push:
-    branches: [ "dev", "staging", "main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dev", "staging", "main" ]
+    branches: [ "main" ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -73,11 +73,29 @@ jobs:
         run: dotnet build Project.Management/Project.Management.sln --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --no-build --verbosity normal
+        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Unit/Project.Management.Tests.Unit.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       - name: Run Integration Tests
-        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj --no-build --verbosity normal
-
+        run: dotnet test /home/runner/work/project-management/project-management/Project.Management/tests/Project.Management.Tests.Integration/Project.Management.Tests.Integration.csproj
+      
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          path: code-coverage-results.md
+          
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
         env:
