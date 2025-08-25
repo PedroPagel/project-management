@@ -9,9 +9,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace Project.Management.Api;
 
 [ExcludeFromCodeCoverage]
-public static class Program
+public class Program
 {
-    public static void Main(string[] args)
+    protected Program()
+    {
+    }
+
+    static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
