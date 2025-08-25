@@ -8,7 +8,11 @@ namespace Project.Management.Infrastructure.Data.Mappings
     {
         public override void Mapping(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("Users");
+            builder.ToTable("TL_USER");
+
+            builder.Property(d => d.Id)
+                .HasColumnName("id")
+                .IsRequired();
 
             builder.Property(u => u.FullName)
                 .HasColumnName("ds_full_name")

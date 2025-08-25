@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/task")]
     [ExcludeFromCodeCoverage]
     public class TaskItemController(ITaskItemService service, IMapper mapper) : ControllerBase
     {
