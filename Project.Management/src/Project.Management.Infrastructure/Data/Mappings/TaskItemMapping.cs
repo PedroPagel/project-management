@@ -8,7 +8,11 @@ namespace Project.Management.Infrastructure.Data.Mappings
     {
         public override void Mapping(EntityTypeBuilder<TaskItem> builder)
         {
-            builder.ToTable("Tasks");
+            builder.ToTable("TL_TASK");
+
+            builder.Property(d => d.Id)
+                .HasColumnName("id")
+                .IsRequired();
 
             builder.Property(t => t.Title)
                 .HasColumnName("ds_title")
