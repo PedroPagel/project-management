@@ -46,7 +46,7 @@ namespace Project.Management.Api.Controllers
         /// </summary>
         /// <param name="request">Project details</param>
         /// <returns>New project</returns>
-        [HttpPost("add")]
+        [HttpPost("create")]
         public async Task<ActionResult<ProjectDto>> Create(ProjectCreationRequest request)
         {
             var created = _mapper.Map<ProjectDto>(await _service.Create(request));
