@@ -1,38 +1,57 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
-using Project.Management.Domain.Entities;
+using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects;
+using Project.Management.Domain.Services.Projects.Models;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class ProjectMemberController(IProjectMemberService service, IMapper mapper) : ControllerBase
+    [Route("api/project-member")]
+    public class ProjectMemberController(IProjectMemberService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IProjectMemberService _service = service;
         private readonly IMapper _mapper = mapper;
 
-        [HttpGet]
+        [HttpGet("all-projects")]
         public async Task<ActionResult<IEnumerable<ProjectMemberDto>>> GetAll()
         {
-            var members = await _service.GetAll();
-            return Ok(_mapper.Map<IEnumerable<ProjectMemberDto>>(members));
+            var projects = _mapper.Map<IEnumerable<ProjectMemberDto>>(await _service.GetAll());
+
+            return await CustomResponse(projects);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ProjectMemberDto>> Create(ProjectMemberDto dto)
+        [HttpGet("projects-members")]
+        public async Task<ActionResult<IEnumerable<ProjectMemberDto>>> GetProjectMembers([FromQuery] ProjectMemberRequest request)
         {
-            var created = await _service.Create(_mapper.Map<ProjectMember>(dto));
-            return Created("", _mapper.Map<ProjectMemberDto>(created)); 
+            var projects = _mapper.Map<IEnumerable<ProjectMemberDto>>(await _service.GetProjectMember(request));
+
+            return await CustomResponse(projects);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] ProjectMemberDto dto)
+        [HttpPost("create")]
+        public async Task<ActionResult<ProjectMemberDto>> Create(ProjectMemberCreationRequest request)
         {
-            var removed = await _service.Delete(dto.UserId, dto.ProjectId);
-            return removed ? NoContent() : NotFound();
+            var created = _mapper.Map<ProjectMemberDto>(await _service.Create(request));
+
+            return await CustomResponse(created);
+        }
+
+        [HttpPost("update")]
+        public async Task<ActionResult<ProjectMemberDto>> Update(ProjectMemberUpdateRequest request)
+        {
+            var updated = _mapper.Map<ProjectMemberDto>(await _service.Update(request));
+
+            return await CustomResponse(updated);
+        }
+
+        [HttpDelete("delete-by-id/{id}")]
+        public async Task<ActionResult<bool>> Delete(Guid id)
+        {
+            var deleted = await _service.Delete(id);
+
+            return await CustomResponse(deleted);
         }
     }
-
 }

@@ -9,14 +9,14 @@ namespace Project.Management.Infrastructure.Repositories
     public abstract class Repository<TEntity>(ProjectManagementDbContext dbContext) : IRepository<TEntity> where TEntity : Entity, new()
     {
         public readonly DbSet<TEntity> DbSet = dbContext.Set<TEntity>();
-        private readonly ProjectManagementDbContext DbContext = dbContext;
+        public readonly ProjectManagementDbContext Db = dbContext;
 
         public virtual async Task<TEntity> Create(TEntity entity)
         {
             entity.Id = Guid.NewGuid();
             entity.CreatedDate = DateTime.UtcNow;
 
-            await DbContext.AddAsync(entity);
+            await Db.AddAsync(entity);
             return entity;
         }
 
@@ -27,8 +27,8 @@ namespace Project.Management.Infrastructure.Repositories
             if (entity is null) 
                 return 0;
 
-            DbContext.Remove(entity);
-            return await DbContext.SaveChangesAsync();
+            Db.Remove(entity);
+            return await Db.SaveChangesAsync();
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAll()
@@ -45,8 +45,8 @@ namespace Project.Management.Infrastructure.Repositories
         {
             entity.UpdatedDate = DateTime.UtcNow;
 
-            DbContext.Update(entity);
-            await DbContext.SaveChangesAsync();
+            Db.Update(entity);
+            await Db.SaveChangesAsync();
 
             return entity;
         }
@@ -63,7 +63,7 @@ namespace Project.Management.Infrastructure.Repositories
 
         public async Task<bool> SaveChanges()
         {
-            return await DbContext.SaveChangesAsync() > 0;
+            return await Db.SaveChangesAsync() > 0;
         }
     }
 }

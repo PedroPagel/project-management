@@ -7,7 +7,11 @@ namespace Project.Management.Infrastructure.Data.Mappings
     {
         public override void Mapping(EntityTypeBuilder<Domain.Entities.Project> builder)
         {
-            builder.ToTable("Projects");
+            builder.ToTable("TL_PROJECT");
+
+            builder.Property(d => d.Id)
+                .HasColumnName("id")
+                .IsRequired();
 
             builder.Property(p => p.Name)
                 .HasColumnName("ds_name")
