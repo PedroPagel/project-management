@@ -31,6 +31,12 @@ public class Program
         builder.Services.AddServices();
         builder.Services.AddSwagger();
 
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+        builder.Logging.SetMinimumLevel(LogLevel.Trace);
+
+
         builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
 
         var app = builder.Build();
@@ -51,7 +57,6 @@ public class Program
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Management API v1");
-                c.RoutePrefix = string.Empty;
             });
 
             app.MapOpenApi();
