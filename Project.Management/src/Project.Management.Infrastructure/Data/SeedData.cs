@@ -8,7 +8,7 @@ namespace Project.Management.Infrastructure.Data
 
         public void SeedData()
         {
-            if (!Users.Any())
+            if (!ProjectMembers.Any())
             {
                 var user1 = new User
                 {

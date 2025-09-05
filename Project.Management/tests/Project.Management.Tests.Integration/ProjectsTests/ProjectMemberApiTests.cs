@@ -2,6 +2,7 @@
 
 namespace Project.Management.Tests.Integration.ProjectsTests
 {
+    [CollectionDefinition("Integration Tests", DisableParallelization = true)]
     public class ProjectMemberApiTests(TestApiFixture fixture) : BaseApiTests(fixture)
     {
         [Fact]

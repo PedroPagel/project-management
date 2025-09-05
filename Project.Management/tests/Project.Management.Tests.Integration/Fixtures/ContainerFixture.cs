@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Project.Management.Api;
@@ -7,7 +8,7 @@ using Testcontainers.PostgreSql;
 
 namespace Project.Management.Tests.Integration.Fixtures
 {
-    internal class ContainerFixture : IAsyncLifetime
+    public class ContainerFixture : IAsyncLifetime
     {
         public PostgreSqlContainer Container { get; private set; }
         public HttpClient Client { get; private set; }
@@ -25,6 +26,7 @@ namespace Project.Management.Tests.Integration.Fixtures
                 .WithUsername("postgres")
                 .WithPassword("postgres")
                 .WithDatabase("project_management")
+                .WithCleanUp(true)
                 .Build();
 
             await Container.StartAsync();
@@ -34,8 +36,8 @@ namespace Project.Management.Tests.Integration.Fixtures
                 .Options;
 
             using var context = new ProjectManagementDbContext(options);
-            await context.Database.MigrateAsync();
 
+            await context.Database.MigrateAsync();
             context.SeedData();
 
             var appFactory = new WebApplicationFactory<Program>()
