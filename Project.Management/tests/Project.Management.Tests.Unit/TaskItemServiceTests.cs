@@ -4,6 +4,7 @@ using Project.Management.Domain.Entities;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Tasks;
+using Project.Management.Domain.Services.Tasks.Models;
 
 namespace Project.Management.Tests.Unit
 {
@@ -23,7 +24,13 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task Create_ShouldCallRepository_AndReturnCreatedItem()
         {
-            var taskItem = new TaskItem { Title = "Fix Bug", Description = "Fix issue #123" };
+            var taskItem = new TaskItemCreationRequest
+            {
+                Title = "Fix Bug",
+                Description = "Fix issue #123",
+                AssignedUserId = Guid.NewGuid(),
+                DueDate = DateTime.UtcNow
+            };
 
             _repoMock.Setup(r => r.Create(It.IsAny<TaskItem>()))
                 .ReturnsAsync((TaskItem t) =>
@@ -44,14 +51,32 @@ namespace Project.Management.Tests.Unit
         [Fact]
         public async Task Update_ShouldCallRepository()
         {
-            var taskItem = new TaskItem { Id = Guid.NewGuid(), Title = "Update Task" };
+            var id = Guid.NewGuid();
+            var expected = new TaskItem { Id = id, Title = "Test" };
 
-            _repoMock.Setup(r => r.Update(taskItem)).ReturnsAsync(taskItem);
+            var taskItem = new TaskItemUpdateRequest
+            {
+
+                Status = Domain.Enums.TaskStatus.Done,
+                Title = "Update Task",
+                TaskId = id,
+            };
+
+            _repoMock.Setup(r => r.Update(It.IsAny<TaskItem>()))
+                .ReturnsAsync((TaskItem t) =>
+                {
+                    t.Id = Guid.NewGuid();
+                    t.CreatedDate = DateTime.UtcNow;
+                    t.UserUpdated = "system";
+                    return t;
+                });
+
+            _repoMock.Setup(r => r.GetById(id)).ReturnsAsync(expected);
 
             var result = await _service.Update(taskItem);
 
             Assert.Equal(taskItem.Title, result.Title);
-            _repoMock.Verify(r => r.Update(taskItem), Times.Once);
+            _repoMock.Verify(r => r.Update(It.IsAny<TaskItem>()), Times.Once);
         }
 
         [Fact]
