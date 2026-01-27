@@ -4,11 +4,13 @@ using Project.Management.Api.Dtos;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects;
 using Project.Management.Domain.Services.Projects.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
     [Route("api/project-member")]
+    [ExcludeFromCodeCoverage]
     public class ProjectMemberController(IProjectMemberService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IProjectMemberService _service = service;
