@@ -5,7 +5,7 @@ namespace Project.Management.Domain.Services.Tasks.Validations
 {
     public class TaskItemUpdateValidation : AbstractValidator<TaskItemUpdateRequest>
     {
-        public TaskItemUpdateValidation(Enums.TaskStatus currentStatus)
+        public TaskItemUpdateValidation(Enums.TaskState currentStatus)
         {
             RuleFor(taskItem => taskItem.TaskId)
                 .NotEmpty()
@@ -20,8 +20,8 @@ namespace Project.Management.Domain.Services.Tasks.Validations
               .WithMessage("Status must be informed.");
 
             RuleFor(taskItem => taskItem.Status)
-             .NotEqual(Enums.TaskStatus.New)
-             .When(taskItem => currentStatus != Enums.TaskStatus.InProgress)
+             .NotEqual(Enums.TaskState.New)
+             .When(taskItem => currentStatus != Enums.TaskState.InProgress)
              .WithMessage("Status must be informed as In.");
         }
     }
