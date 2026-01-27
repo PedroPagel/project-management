@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
-using Project.Management.Domain.Entities;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects;
 using Project.Management.Domain.Services.Projects.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
 {
     [ApiController]
     [Route("api/project")]
+    [ExcludeFromCodeCoverage]
     public class ProjectController(INotificator notificator, IProjectService service, IMapper mapper) : BaseController(notificator)
     {
         private readonly IProjectService _service = service;
@@ -45,7 +46,7 @@ namespace Project.Management.Api.Controllers
         /// </summary>
         /// <param name="request">Project details</param>
         /// <returns>New project</returns>
-        [HttpPost("add")]
+        [HttpPost("create")]
         public async Task<ActionResult<ProjectDto>> Create(ProjectCreationRequest request)
         {
             var created = _mapper.Map<ProjectDto>(await _service.Create(request));

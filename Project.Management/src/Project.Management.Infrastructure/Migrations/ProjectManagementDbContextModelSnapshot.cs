@@ -69,11 +69,16 @@ namespace Project.Management.Infrastructure.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("bl_no_sales");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
@@ -90,7 +95,7 @@ namespace Project.Management.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ProjectMembers", (string)null);
+                    b.ToTable("TL_PROJECT_MEMBER", (string)null);
                 });
 
             modelBuilder.Entity("Project.Management.Domain.Entities.Role", b =>

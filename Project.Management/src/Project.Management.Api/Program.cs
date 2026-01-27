@@ -1,15 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Management.Api.Mappings;
 using Project.Management.Api.Middlewares;
+using Project.Management.Aspire.ServiceDefaults;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Data;
 using Project.Management.Infrastructure.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
-    public static void Main(string[] args)
+    protected Program()
+    {
+    }
+
+    static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
@@ -23,6 +30,12 @@ public class Program
         builder.Services.AddLogging();
         builder.Services.AddServices();
         builder.Services.AddSwagger();
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+        builder.Logging.SetMinimumLevel(LogLevel.Trace);
+
 
         builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
 
@@ -44,7 +57,6 @@ public class Program
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Management API v1");
-                c.RoutePrefix = string.Empty;
             });
 
             app.MapOpenApi();
