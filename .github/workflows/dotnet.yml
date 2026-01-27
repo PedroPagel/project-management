@@ -95,6 +95,8 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       # 8️⃣ END SonarCloud Analysis
       - name: SonarCloud – end analysis
