@@ -2,7 +2,7 @@
 
 namespace Project.Management.Tests.Integration
 {
-    public class TestApiFixture : MemoryFixture
+    public class TestApiFixture : ContainerFixture
     {
     }
 }

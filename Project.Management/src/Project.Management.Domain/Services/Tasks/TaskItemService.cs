@@ -1,24 +1,63 @@
 ﻿using Microsoft.Extensions.Logging;
 using Project.Management.Domain.Entities;
+using Project.Management.Domain.Extensions;
 using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
+using Project.Management.Domain.Services.Tasks.Models;
+using Project.Management.Domain.Services.Tasks.Validations;
 
 namespace Project.Management.Domain.Services.Tasks
 {
     public class TaskItemService(INotificator notificator, ITaskItemRepository taskItemRepository, ILogger<TaskItemService> logger)
-    : BaseService(notificator, logger), ITaskItemService
+    : BaseRepositoryService<TaskItem>(notificator, logger, taskItemRepository), ITaskItemService
     {
         private readonly ITaskItemRepository _taskItemRepository = taskItemRepository;
 
-        public async Task<TaskItem> Create(TaskItem taskItem) => await _taskItemRepository.Create(taskItem);
+        public async Task<TaskItem> Create(TaskItemCreationRequest request)
+        {
+            _logger.LogInformation("Creating task with description {Description}", request.Description);
 
-        public async Task<TaskItem> Update(TaskItem taskItem) => await _taskItemRepository.Update(taskItem);
+            if (Validate(new TaskItemCreationValidation(), request))
+            {
+                return await _repository.Create(new TaskItem()
+                {
+                    DueDate = request.DueDate,
+                    AssignedUserId = request.AssignedUserId,
+                    Title = request.Title,
+                    ProjectId = request.ProjectId,
+                    Description = request.Description,
+                    Status = Enums.TaskState.New
+                });
+            }
 
-        public async Task<bool> Delete(Guid id) => await _taskItemRepository.Delete(id) > 0;
+            _logger.LogInformation("Task item creation failed due to validation errors");
+            return null;
+        }
 
-        public async Task<TaskItem> GetById(Guid id) => await _taskItemRepository.GetById(id);
+        public async Task<TaskItem> Update(TaskItemUpdateRequest request)
+        {
+            _logger.LogInformation("Updating task with id {TaskId}", request.TaskId);
+            var taskItem = await _repository.GetById(request.TaskId);
 
-        public async Task<IEnumerable<TaskItem>> GetAll() => await _taskItemRepository.GetAll();
+            if (taskItem is null)
+            {
+                NotifyErrorBadRequest($"Invalid task item Id provided");
+                return null;
+            }
+
+            if (Validate(new TaskItemUpdateValidation(taskItem.Status), request))
+            {
+                taskItem.UpdateIfDifferent(ti => ti.Description, request.Description);
+                taskItem.UpdateIfDifferent(ti => ti.Title, request.Title);
+                taskItem.UpdateIfDifferent(ti => ti.DueDate, request.DueDate);
+                taskItem.Status = request.Status;
+
+                return await _repository.Update(taskItem);
+            }
+
+            _logger.LogInformation("Task item update failed due to validation errors");
+            return null;
+        }
     }
 
 }

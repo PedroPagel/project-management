@@ -3,11 +3,17 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Web;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace Project.Management.Tests.Integration
 {
-    public class BaseApiTests(TestApiFixture fixture) : IClassFixture<TestApiFixture>
+    public class BaseApiTests: IClassFixture<TestApiFixture>
     {
-        private readonly HttpClient _client = fixture.Client;
+        private readonly HttpClient _client;
+
+        public BaseApiTests(TestApiFixture fixture)
+        {
+            _client ??= fixture.Client;
+        }
 
         private static async Task<T> GetResponseMessage<T>(HttpResponseMessage httpResponse)
         {

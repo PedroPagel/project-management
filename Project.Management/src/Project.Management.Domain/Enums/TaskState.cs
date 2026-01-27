@@ -1,11 +1,10 @@
 ﻿namespace Project.Management.Domain.Enums
 {
-    public enum TaskStatus
+    public enum TaskState
     {
-        Todo,
+        New,
         InProgress,
         Blocked,
         Done
     }
-
 }
