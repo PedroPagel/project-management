@@ -5,7 +5,6 @@ using Project.Management.Domain.Repositories;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Projects.Models;
 using Project.Management.Domain.Services.Projects.Validators;
-using System.Linq.Expressions;
 
 namespace Project.Management.Domain.Services.Projects
 {
