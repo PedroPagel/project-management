@@ -8,7 +8,7 @@ namespace Project.Management.Domain.Services.Tasks.Models
         public Guid TaskId { get; set; }
 
         [Required]
-        public Enums.TaskStatus Status { get; set; }
+        public Enums.TaskState Status { get; set; }
 
         public DateTime? DueDate { get; set; }
 

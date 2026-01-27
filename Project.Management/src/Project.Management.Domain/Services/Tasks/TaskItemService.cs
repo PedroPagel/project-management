@@ -26,7 +26,7 @@ namespace Project.Management.Domain.Services.Tasks
                     Title = request.Title,
                     ProjectId = request.ProjectId,
                     Description = request.Description,
-                    Status = Enums.TaskStatus.New
+                    Status = Enums.TaskState.New
                 });
             }
 
