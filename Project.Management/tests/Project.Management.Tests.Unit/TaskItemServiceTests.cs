@@ -29,6 +29,7 @@ namespace Project.Management.Tests.Unit
                 Title = "Fix Bug",
                 Description = "Fix issue #123",
                 AssignedUserId = Guid.NewGuid(),
+                ProjectId = Guid.NewGuid(),
                 DueDate = DateTime.UtcNow
             };
 
@@ -38,11 +39,14 @@ namespace Project.Management.Tests.Unit
                     t.Id = Guid.NewGuid();
                     t.CreatedDate = DateTime.UtcNow;
                     t.UserUpdated = "system";
+                    t.ProjectId = Guid.NewGuid();
+
                     return t;
                 });
 
             var result = await _service.Create(taskItem);
 
+            Assert.NotNull(result);
             Assert.NotEqual(Guid.Empty, result.Id);
             Assert.Equal("system", result.UserUpdated);
             _repoMock.Verify(r => r.Create(It.IsAny<TaskItem>()), Times.Once);
@@ -57,7 +61,7 @@ namespace Project.Management.Tests.Unit
             var taskItem = new TaskItemUpdateRequest
             {
 
-                Status = Domain.Enums.TaskStatus.Done,
+                Status = Domain.Enums.TaskState.Done,
                 Title = "Update Task",
                 TaskId = id,
             };

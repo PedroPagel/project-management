@@ -78,7 +78,7 @@ namespace Project.Management.Infrastructure.Data
                     Description = "Implement CRUD",
                     ProjectId = project1.Id,
                     AssignedUserId = user1.Id,
-                    Status = TaskStatus.Created,
+                    Status = Domain.Enums.TaskState.New,
                     CreatedDate = DateTime.UtcNow,
                     UserUpdated = User
                 };
