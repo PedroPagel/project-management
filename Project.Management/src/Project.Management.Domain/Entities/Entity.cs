@@ -1,5 +1,8 @@
-﻿namespace Project.Management.Domain.Entities
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Project.Management.Domain.Entities
 {
+    [ExcludeFromCodeCoverage]
     public abstract class Entity
     {
         public Guid Id { get; set; }

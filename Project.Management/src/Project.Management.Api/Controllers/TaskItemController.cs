@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
 using Project.Management.Domain.Entities;
+using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Tasks;
+using Project.Management.Domain.Services.Tasks.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api.Controllers
@@ -10,46 +12,49 @@ namespace Project.Management.Api.Controllers
     [ApiController]
     [Route("api/task")]
     [ExcludeFromCodeCoverage]
-    public class TaskItemController(ITaskItemService service, IMapper mapper) : ControllerBase
+    public class TaskItemController(ITaskItemService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly ITaskItemService _service = service;
         private readonly IMapper _mapper = mapper;
 
-        [HttpGet]
+        [HttpGet("all-tasks")]
         public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetAll()
         {
-            var tasks = await _service.GetAll();
-            return Ok(_mapper.Map<IEnumerable<TaskItemDto>>(tasks));
+            var tasks = _mapper.Map<IEnumerable<TaskItemDto>>(await _service.GetAll());
+
+            return await CustomResponse(tasks);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("task-by-id/{id}")]
         public async Task<ActionResult<TaskItemDto>> GetById(Guid id)
         {
-            var task = await _service.GetById(id);
-            return task is null ? NotFound() : Ok(_mapper.Map<TaskItemDto>(task));
+            var task = _mapper.Map<TaskItemDto>(await _service.GetById(id));
+
+            return await CustomResponse(task);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<TaskItemDto>> Create(TaskItemDto dto)
+        [HttpPost("add")]
+        public async Task<ActionResult<TaskItemDto>> Create(TaskItemCreationRequest request)
         {
-            var created = await _service.Create(_mapper.Map<TaskItem>(dto));
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, _mapper.Map<TaskItemDto>(created));
+            var created = _mapper.Map<TaskItemDto>(await _service.Create(request));
+
+            return await CustomResponse(created);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<TaskItemDto>> Update(Guid id, TaskItemDto dto)
+        [HttpPut("update")]
+        public async Task<ActionResult<TaskItemDto>> Update(TaskItemUpdateRequest request)
         {
-            if (id != dto.Id) 
-                return BadRequest();
+            var updated = _mapper.Map<TaskItem>(await _service.Update(request));
 
-            var updated = await _service.Update(_mapper.Map<TaskItem>(dto));
-            return Ok(_mapper.Map<TaskItemDto>(updated));
+            return await CustomResponse(updated);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("delete-by-id/{id}")]
+        public async Task<ActionResult<bool>> Delete(Guid id)
         {
-            return await _service.Delete(id) ? NoContent() : NotFound();
+            var deleted = await _service.Delete(id);
+
+            return await CustomResponse(deleted);
         }
     }
 
