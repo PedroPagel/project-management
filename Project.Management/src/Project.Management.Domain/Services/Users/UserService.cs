@@ -42,6 +42,14 @@ namespace Project.Management.Domain.Services.Users
         {
             _logger.LogInformation("Updating user with ID {Id}", request.Id);
 
+            if (request.Id == Guid.Empty)
+            {
+                NotifyErrorBadRequest($"Invalid user Id provided");
+                return null;
+            }
+
+
+
             if (Validate(new UserUpdateValidator(), request))
             {
                 var user = await _repository.GetById(request.Id);

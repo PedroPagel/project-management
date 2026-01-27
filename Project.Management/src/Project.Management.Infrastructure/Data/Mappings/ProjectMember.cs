@@ -8,7 +8,11 @@ namespace Project.Management.Infrastructure.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<ProjectMember> builder)
         {
-            builder.ToTable("ProjectMembers");
+            builder.ToTable("TL_PROJECT_MEMBER");
+
+            builder.Property(d => d.Id)
+                .HasColumnName("id")
+                .IsRequired();
 
             builder.HasKey(pm => new { pm.UserId, pm.ProjectId });
 
@@ -23,6 +27,10 @@ namespace Project.Management.Infrastructure.Data.Mappings
             builder.HasOne(pm => pm.Role)
                 .WithMany(r => r.ProjectMembers)
                 .HasForeignKey(pm => pm.RoleId);
+
+            builder.Property(pm => pm.Active)
+               .HasColumnName("bl_no_sales")
+               .IsRequired();
         }
     }
 

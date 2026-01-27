@@ -10,7 +10,12 @@ namespace Project.Management.Domain.Services.Projects.Validators
             RuleFor(user => user.Name)
                 .NotEmpty()
                 .WithMessage("Name is required.")
-                .When(p => !p.Name.Equals(project.Name));
+                .When(p => !p.Name.Equals(project.Name))
+                .WithMessage($"Project with the name {project.Name} already exists.");
+
+            RuleFor(user => user.Name)
+               .NotEqual(project.Name)
+               .WithMessage($"Project with the name {project.Name} already exists.");
 
             RuleFor(user => user.Description)
                 .NotEmpty()
