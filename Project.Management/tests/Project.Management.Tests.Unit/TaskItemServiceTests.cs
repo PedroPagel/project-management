@@ -119,6 +119,63 @@ namespace Project.Management.Tests.Unit
 
             Assert.Equal(2, result.Count());
         }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenValidationFails()
+        {
+            var taskItem = new TaskItemCreationRequest
+            {
+                Title = "",
+                Description = "Missing title",
+                AssignedUserId = Guid.Empty,
+                ProjectId = Guid.Empty,
+                DueDate = default
+            };
+
+            var result = await _service.Create(taskItem);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<TaskItem>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenTaskNotFound()
+        {
+            var request = new TaskItemUpdateRequest
+            {
+                TaskId = Guid.NewGuid(),
+                Status = Domain.Enums.TaskState.InProgress,
+                Title = "Update Task"
+            };
+
+            _repoMock.Setup(r => r.GetById(request.TaskId)).ReturnsAsync((TaskItem)null);
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<TaskItem>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenValidationFails()
+        {
+            var taskId = Guid.NewGuid();
+            var existing = new TaskItem { Id = taskId, Status = Domain.Enums.TaskState.Done };
+
+            var request = new TaskItemUpdateRequest
+            {
+                TaskId = taskId,
+                Status = Domain.Enums.TaskState.New,
+                Title = "Invalid Status"
+            };
+
+            _repoMock.Setup(r => r.GetById(taskId)).ReturnsAsync(existing);
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<TaskItem>()), Times.Never);
+        }
     }
 
 }
