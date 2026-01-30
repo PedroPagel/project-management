@@ -98,5 +98,54 @@ namespace Project.Management.Tests.Unit
 
             Assert.Equal(2, result.Count());
         }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenNameIsInvalid()
+        {
+            var role = new RoleCreateRequest { Name = "De" };
+
+            var result = await _service.Create(role);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<Role>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenIdIsEmpty()
+        {
+            var roleRequest = new RoleUpdateRequest { Id = Guid.Empty, Name = "Tester" };
+
+            var result = await _service.Update(roleRequest);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<Role>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenRoleNotFound()
+        {
+            var roleRequest = new RoleUpdateRequest { Id = Guid.NewGuid(), Name = "Tester" };
+
+            _repoMock.Setup(r => r.GetById(roleRequest.Id)).ReturnsAsync((Role)null);
+
+            var result = await _service.Update(roleRequest);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<Role>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenNameMatchesExisting()
+        {
+            var roleId = Guid.NewGuid();
+            var roleRequest = new RoleUpdateRequest { Id = roleId, Name = "Analyst" };
+
+            _repoMock.Setup(r => r.GetById(roleId)).ReturnsAsync(new Role { Id = roleId, Name = "Analyst" });
+
+            var result = await _service.Update(roleRequest);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<Role>()), Times.Never);
+        }
     }
 }

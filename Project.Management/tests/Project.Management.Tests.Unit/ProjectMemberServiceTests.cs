@@ -77,6 +77,81 @@ namespace Project.Management.Tests.Unit
         }
 
         [Fact]
+        public async Task Create_ShouldReturnNull_WhenRoleNotFound()
+        {
+            var request = ValidRequest();
+
+            _repoMock.Setup(r => r.GetProjectMemberLink(request))
+                .ReturnsAsync(new ProjectMemberQueryValidation
+                {
+                    UserExists = true,
+                    RoleExists = false,
+                    ProjectExists = true
+                });
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<ProjectMember>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenProjectNotFound()
+        {
+            var request = ValidRequest();
+
+            _repoMock.Setup(r => r.GetProjectMemberLink(request))
+                .ReturnsAsync(new ProjectMemberQueryValidation
+                {
+                    UserExists = true,
+                    RoleExists = true,
+                    ProjectExists = false
+                });
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<ProjectMember>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenProjectMemberAlreadyExists()
+        {
+            var request = ValidRequest();
+
+            _repoMock.Setup(r => r.GetProjectMemberLink(request))
+                .ReturnsAsync(new ProjectMemberQueryValidation
+                {
+                    UserExists = true,
+                    RoleExists = true,
+                    ProjectExists = true,
+                    ProjectMemberId = Guid.NewGuid()
+                });
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<ProjectMember>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenValidationFails()
+        {
+            var request = new ProjectMemberCreationRequest
+            {
+                UserId = Guid.Empty,
+                RoleId = Guid.Empty,
+                ProjectId = Guid.Empty
+            };
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.GetProjectMemberLink(It.IsAny<ProjectMemberCreationRequest>()), Times.Never);
+            _repoMock.Verify(r => r.Create(It.IsAny<ProjectMember>()), Times.Never);
+        }
+
+        [Fact]
         public async Task Update_ShouldReturnNull_WhenNotFound()
         {
             var request = new ProjectMemberUpdateRequest
