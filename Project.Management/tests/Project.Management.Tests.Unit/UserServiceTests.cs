@@ -74,6 +74,54 @@ namespace Project.Management.Tests.Unit
 
             _repoMock.Verify(r => r.Delete(id), Times.Once);
         }
+
+        [Fact]
+        public async Task CreateAsync_ShouldReturnNull_WhenValidationFails()
+        {
+            var request = new UserCreationRequest { FullName = "", Email = "invalid", PasswordHash = "123" };
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task CreateAsync_ShouldReturnNull_WhenEmailAlreadyExists()
+        {
+            var request = new UserCreationRequest { FullName = "Alice", Email = "alice@mail.com", PasswordHash = "123456" };
+
+            _repoMock.Setup(r => r.FirstOrDefault(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()))
+                .ReturnsAsync(new User { Id = Guid.NewGuid(), Email = request.Email });
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldReturnNull_WhenIdIsEmpty()
+        {
+            var request = new UserUpdateRequest { Id = Guid.Empty, Email = "test@example.com" };
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldReturnNull_WhenValidationFails()
+        {
+            var request = new UserUpdateRequest { Id = Guid.NewGuid(), Email = "invalid" };
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.GetById(It.IsAny<Guid>()), Times.Never);
+            _repoMock.Verify(r => r.Update(It.IsAny<User>()), Times.Never);
+        }
     }
 
 }

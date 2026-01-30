@@ -58,6 +58,79 @@ namespace Project.Management.Tests.Unit
 
             Assert.True(result);
         }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenValidationFails()
+        {
+            var request = new ProjectCreationRequest
+            {
+                Name = "",
+                StartDate = DateTime.UtcNow.AddDays(-2),
+                EndDate = DateTime.UtcNow.AddDays(-1),
+                Description = "bad"
+            };
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<Domain.Entities.Project>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNull_WhenNameAlreadyExists()
+        {
+            var request = new ProjectCreationRequest
+            {
+                Name = "Existing",
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddDays(10),
+                Description = "Existing project"
+            };
+
+            _repoMock.Setup(r => r.FirstOrDefault(It.IsAny<System.Linq.Expressions.Expression<Func<Domain.Entities.Project, bool>>>()))
+                .ReturnsAsync(new Domain.Entities.Project { Id = Guid.NewGuid(), Name = request.Name });
+
+            var result = await _service.Create(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Create(It.IsAny<Domain.Entities.Project>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenIdIsEmpty()
+        {
+            var request = new ProjectUpdateRequest
+            {
+                Id = Guid.Empty,
+                Name = "Updated",
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddDays(1)
+            };
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<Domain.Entities.Project>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNull_WhenProjectNotFound()
+        {
+            var request = new ProjectUpdateRequest
+            {
+                Id = Guid.NewGuid(),
+                Name = "Updated",
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddDays(1)
+            };
+
+            _repoMock.Setup(r => r.GetById(request.Id)).ReturnsAsync((Domain.Entities.Project)null);
+
+            var result = await _service.Update(request);
+
+            Assert.Null(result);
+            _repoMock.Verify(r => r.Update(It.IsAny<Domain.Entities.Project>()), Times.Never);
+        }
     }
 
 }
