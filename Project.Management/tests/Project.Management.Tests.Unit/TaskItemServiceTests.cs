@@ -148,7 +148,7 @@ namespace Project.Management.Tests.Unit
                 Title = "Update Task"
             };
 
-            _repoMock.Setup(r => r.GetById(request.TaskId)).ReturnsAsync((TaskItem)null);
+            _repoMock.Setup(r => r.GetById(request.TaskId)).ReturnsAsync((TaskItem)null!);
 
             var result = await _service.Update(request);
 
