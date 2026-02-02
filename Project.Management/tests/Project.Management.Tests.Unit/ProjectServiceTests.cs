@@ -124,7 +124,7 @@ namespace Project.Management.Tests.Unit
                 EndDate = DateTime.UtcNow.AddDays(1)
             };
 
-            _repoMock.Setup(r => r.GetById(request.Id)).ReturnsAsync((Domain.Entities.Project)null);
+            _repoMock.Setup(r => r.GetById(request.Id)).ReturnsAsync((Domain.Entities.Project)null!);
 
             var result = await _service.Update(request);
 
