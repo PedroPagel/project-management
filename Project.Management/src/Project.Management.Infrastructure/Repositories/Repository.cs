@@ -15,8 +15,11 @@ namespace Project.Management.Infrastructure.Repositories
         {
             entity.Id = Guid.NewGuid();
             entity.CreatedDate = DateTime.UtcNow;
+            entity.UserUpdated = string.Empty;
 
             await Db.AddAsync(entity);
+            await Db.SaveChangesAsync();
+
             return entity;
         }
 
