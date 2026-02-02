@@ -11,11 +11,18 @@ namespace Project.Management.Api.Controllers
     [ApiController]
     [Route("api/project-member")]
     [ExcludeFromCodeCoverage]
+    /// <summary>
+    /// Project member endpoints.
+    /// </summary>
     public class ProjectMemberController(IProjectMemberService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IProjectMemberService _service = service;
         private readonly IMapper _mapper = mapper;
 
+        /// <summary>
+        /// Get all project members in the system.
+        /// </summary>
+        /// <returns>Project members.</returns>
         [HttpGet("all-projects")]
         public async Task<ActionResult<IEnumerable<ProjectMemberDto>>> GetAll()
         {
@@ -24,6 +31,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(projects);
         }
 
+        /// <summary>
+        /// Get project members for a project.
+        /// </summary>
+        /// <param name="request">Project member query.</param>
+        /// <returns>Project members.</returns>
         [HttpGet("projects-members")]
         public async Task<ActionResult<IEnumerable<ProjectMemberDto>>> GetProjectMembers([FromQuery] ProjectMemberRequest request)
         {
@@ -32,6 +44,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(projects);
         }
 
+        /// <summary>
+        /// Add a project member.
+        /// </summary>
+        /// <param name="request">Project member details.</param>
+        /// <returns>New project member.</returns>
         [HttpPost("create")]
         public async Task<ActionResult<ProjectMemberDto>> Create(ProjectMemberCreationRequest request)
         {
@@ -40,6 +57,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(created);
         }
 
+        /// <summary>
+        /// Update a project member.
+        /// </summary>
+        /// <param name="request">Project member details.</param>
+        /// <returns>Updated project member.</returns>
         [HttpPost("update")]
         public async Task<ActionResult<ProjectMemberDto>> Update(ProjectMemberUpdateRequest request)
         {
@@ -48,6 +70,11 @@ namespace Project.Management.Api.Controllers
             return await CustomResponse(updated);
         }
 
+        /// <summary>
+        /// Delete a project member by id.
+        /// </summary>
+        /// <param name="id">Project member id.</param>
+        /// <returns>True if deleted.</returns>
         [HttpDelete("delete-by-id/{id}")]
         public async Task<ActionResult<bool>> Delete(Guid id)
         {
