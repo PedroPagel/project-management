@@ -36,8 +36,8 @@ namespace Project.Management.Tests.Integration.ProjectsTests
             {
                 name = $"Project Beta {Guid.NewGuid():N}",
                 description = "Integration test project",
-                startDate = DateTime.UtcNow.Date,
-                endDate = DateTime.UtcNow.Date.AddDays(14)
+                startDate = DateTime.UtcNow,
+                endDate = DateTime.UtcNow.AddDays(14)
             };
 
             // Act
