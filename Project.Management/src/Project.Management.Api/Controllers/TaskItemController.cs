@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Management.Api.Dtos;
-using Project.Management.Domain.Entities;
 using Project.Management.Domain.Services.Notificator;
 using Project.Management.Domain.Services.Tasks;
 using Project.Management.Domain.Services.Tasks.Models;
@@ -12,9 +11,6 @@ namespace Project.Management.Api.Controllers
     [ApiController]
     [Route("api/task")]
     [ExcludeFromCodeCoverage]
-    /// <summary>
-    /// Task item endpoints.
-    /// </summary>
     public class TaskItemController(ITaskItemService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly ITaskItemService _service = service;

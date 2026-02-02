@@ -11,9 +11,6 @@ namespace Project.Management.Api.Controllers
     [ApiController]
     [Route("api/project-member")]
     [ExcludeFromCodeCoverage]
-    /// <summary>
-    /// Project member endpoints.
-    /// </summary>
     public class ProjectMemberController(IProjectMemberService service, IMapper mapper, INotificator notificator) : BaseController(notificator)
     {
         private readonly IProjectMemberService _service = service;
