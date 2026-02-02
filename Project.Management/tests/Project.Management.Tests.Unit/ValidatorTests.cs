@@ -108,7 +108,7 @@ namespace Project.Management.Tests.Unit
                 Name = "Existing",
                 Description = project.Description,
                 StartDate = project.StartDate,
-                EndDate = project.EndDate
+                EndDate = project.EndDate.Value
             };
 
             var result = validator.Validate(request);
@@ -134,7 +134,7 @@ namespace Project.Management.Tests.Unit
                 Name = "Updated",
                 Description = "Updated description",
                 StartDate = project.StartDate.AddDays(1),
-                EndDate = project.EndDate.AddDays(2)
+                EndDate = project.EndDate.Value.AddDays(2)
             };
 
             var result = validator.Validate(request);

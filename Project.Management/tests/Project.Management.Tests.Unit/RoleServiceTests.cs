@@ -126,7 +126,7 @@ namespace Project.Management.Tests.Unit
         {
             var roleRequest = new RoleUpdateRequest { Id = Guid.NewGuid(), Name = "Tester" };
 
-            _repoMock.Setup(r => r.GetById(roleRequest.Id)).ReturnsAsync((Role)null);
+            _repoMock.Setup(r => r.GetById(roleRequest.Id)).ReturnsAsync((Role)null!);
 
             var result = await _service.Update(roleRequest);
 
