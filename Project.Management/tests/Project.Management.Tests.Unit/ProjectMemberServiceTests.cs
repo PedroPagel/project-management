@@ -160,7 +160,7 @@ namespace Project.Management.Tests.Unit
             };
 
             _repoMock.Setup(r => r.GetById(request.ProjectMemberId))
-                .ReturnsAsync((ProjectMember)null);
+                .ReturnsAsync((ProjectMember)null!);
 
             var result = await _service.Update(request);
 
