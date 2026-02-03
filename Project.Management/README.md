@@ -20,19 +20,11 @@ Project Management is a .NET solution that exposes a REST API for managing proje
   - Non-development environments use PostgreSQL with migrations applied on startup.
 - Swagger/OpenAPI with UI available in development.
 - Hangfire background processing with a recurring maintenance job and optional dashboard in development.
-- RabbitMQ listener for user creation events with optional in-memory mode for local development.
-
-## Architecture & Patterns
-- **Domain-Driven Design (DDD)**: The solution separates Domain, Infrastructure, and API layers, with entities and services housed in the domain project.
-- **Repository Pattern**: Domain repositories define contracts (`IRepository<TEntity>`), with EF Core implementations in the Infrastructure layer.
-- **Notification Pattern**: Domain services use the `INotificator`/`Notificator` to collect and surface validation/business errors to the API layer.
-- **Validation Pattern**: FluentValidation validators enforce business rules for create/update flows (projects, tasks, users, roles, members).
 
 ## Technology Stack
 - .NET / ASP.NET Core
 - Entity Framework Core (InMemory provider for dev, Npgsql for PostgreSQL in production)
 - Hangfire with PostgreSQL storage
-- RabbitMQ (RabbitMQ.Client)
 - AutoMapper
 - Swagger/OpenAPI
 - .NET Aspire for service orchestration
@@ -67,14 +59,6 @@ In development, the Hangfire dashboard is available at `/hangfire`.
 - Connection strings are read from `ConnectionStrings:DefaultConnection`.
 - In development, the system uses an in-memory database and seeds data at startup.
 - In other environments, migrations run automatically on startup.
-- RabbitMQ settings live under `RabbitMq` in API configuration (`appsettings*.json`), including:
-  - `Enabled`, `UseInMemory`, `HostName`, `Port`, `UserName`, `Password`, `VirtualHost`, and `QueueName`.
-  - `Docker:StartRabbitMqOnStartup` and `Docker:ScriptPath` for optional local Docker startup.
-
-### RabbitMQ (local)
-- Docker Compose includes a RabbitMQ container (`rabbitmq:3-management`) for local development.
-- Helper scripts are available in `scripts/run-rabbitmq.sh` and `scripts/run-rabbitmq.ps1`.
-- When enabled, the API hosts a background listener that consumes the `user.create` queue and creates users from incoming messages.
 
 ## Testing
 ```bash
