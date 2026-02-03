@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Project.Management.Aspire\Project.Management.Aspire.ServiceDefaults\Project.Management.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Project.Management.Aspire\Project.Management.Aspire.ServiceDefaults\Project.Management.Aspire.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Project.Management.Infrastructure\Project.Management.Infrastructure.csproj" />
   </ItemGroup>
 

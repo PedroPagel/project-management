@@ -1,5 +1,7 @@
 using Hangfire;
-using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Hangfire.PostgreSql;
 using Project.Management.Aspire.ServiceDefaults;
 using Project.Management.Hangfire.Jobs;
@@ -12,36 +14,40 @@ builder.AddServiceDefaults();
 
 builder.Services.ConfigureDataLayer(builder.Configuration, builder.Environment.IsEnvironment("Development"));
 
-if (builder.Environment.IsDevelopment())
+builder.Services.AddHangfire((sp, config) =>
 {
-    builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage());
-}
-else
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new InvalidOperationException("DefaultConnection is not configured for Hangfire storage.");
-    }
-    builder.Services.AddHangfire(configuration => configuration.UsePostgreSqlStorage(connectionString));
-}
+    config.UseSimpleAssemblyNameTypeSerializer()
+          .UseRecommendedSerializerSettings();
 
-builder.Services.AddHangfireServer();
+    var cs = builder.Configuration.GetConnectionString("DefaultConnection");
+    config.UsePostgreSqlStorage(cs);
+});
 
 builder.Services.AddScoped<ProjectMaintenanceJob>();
+builder.Services.AddHangfireServer();
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 var app = builder.Build();
 
-app.MapHangfireDashboard("/hangfire");
+using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<ProjectManagementDbContext>();
 
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
-    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-    recurringJobs.AddOrUpdate<ProjectMaintenanceJob>(
-        "project-maintenance",
-        job => job.ExecuteAsync(CancellationToken.None),
-        "0 * * * *",
-        new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+    db.SeedData();
+    app.UseHangfireDashboard("/hangfire");
+}
+else
+{
+    db.Database.Migrate();
 }
 
-await app.RunAsync();
+var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+recurringJobs.AddOrUpdate<ProjectMaintenanceJob>(
+    "project-maintenance",
+    job => job.ExecuteAsync(CancellationToken.None),
+    "0 * * * *",
+    new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+
+app.MapGet("/", () => "OK");
+app.Run();
