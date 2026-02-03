@@ -73,9 +73,9 @@ namespace Project.Management.Api.Controllers
         /// <param name="id">Project id</param>
         /// <returns>True if deleted</returns>
         [HttpDelete("delete-by-id/{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<ActionResult<bool>> Delete(Guid id)
         {
-            var deletedProject = await _service.GetById(id);
+            var deletedProject = await _service.Delete(id);
 
             return await CustomResponse(deletedProject);
         }
