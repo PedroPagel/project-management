@@ -5,6 +5,7 @@ using Project.Management.Domain.Services.Users;
 using Project.Management.Domain.Services.Users.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Project.Management.Api.Messaging
 {
@@ -19,6 +20,12 @@ namespace Project.Management.Api.Messaging
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            if (!_options.Enabled)
+            {
+                logger.LogInformation("RabbitMQ listener disabled via configuration.");
+                return Task.CompletedTask;
+            }
+
             var factory = new ConnectionFactory
             {
                 HostName = _options.HostName,
@@ -29,8 +36,16 @@ namespace Project.Management.Api.Messaging
                 DispatchConsumersAsync = true
             };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            try
+            {
+                _connection = factory.CreateConnection();
+                _channel = _connection.CreateModel();
+            }
+            catch (BrokerUnreachableException exception)
+            {
+                logger.LogWarning(exception, "RabbitMQ broker unreachable. Listener will remain inactive.");
+                return Task.CompletedTask;
+            }
 
             _channel.QueueDeclare(
                 queue: _options.QueueName,
