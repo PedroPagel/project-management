@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Project.Management.Api\Project.Management.Api.csproj" />
+    <ProjectReference Include="..\..\src\Project.Management.Hangfire\Project.Management.Hangfire.csproj" />
   </ItemGroup>
 
   <ItemGroup>
