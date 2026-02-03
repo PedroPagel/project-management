@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Management.Api.Mappings;
 using Project.Management.Api.Middlewares;
+using Project.Management.Api.Messaging;
 using Project.Management.Aspire.ServiceDefaults;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Data;
@@ -30,6 +31,8 @@ public class Program
         builder.Services.AddLogging();
         builder.Services.AddServices();
         builder.Services.AddSwagger();
+        builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+        builder.Services.AddHostedService<UserCreationRabbitMqListener>();
 
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
