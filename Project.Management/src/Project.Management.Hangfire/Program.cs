@@ -32,7 +32,7 @@ builder.Services.AddScoped<ProjectMaintenanceJob>();
 
 var app = builder.Build();
 
-app.UseHangfireDashboard("/hangfire");
+app.MapHangfireDashboard("/hangfire");
 
 using (var scope = app.Services.CreateScope())
 {
