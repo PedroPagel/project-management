@@ -1,8 +1,8 @@
 using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Hangfire.PostgreSql;
 using Project.Management.Aspire.ServiceDefaults;
 using Project.Management.Hangfire.Jobs;
 using Project.Management.Infrastructure.Configurations;
@@ -20,7 +20,7 @@ builder.Services.AddHangfire((sp, config) =>
           .UseRecommendedSerializerSettings();
 
     var cs = builder.Configuration.GetConnectionString("DefaultConnection");
-    config.UsePostgreSqlStorage(cs);
+    config.UsePostgreSqlStorage(opt => opt.UseNpgsqlConnection(cs));
 });
 
 builder.Services.AddScoped<ProjectMaintenanceJob>();

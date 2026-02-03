@@ -26,7 +26,7 @@ namespace Project.Management.Tests.Integration.TasksTests
             var task = await GetAsync<TaskItemDto>($"/api/task/task-by-id/{taskId}");
 
             // Assert
-            Assert.Equal("Create API endpoints", task.Title);
+            Assert.Equal("Kickoff meeting", task.Title);
         }
 
         [Fact]
