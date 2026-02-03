@@ -105,17 +105,29 @@ public class Program
             return;
         }
 
+        var extension = Path.GetExtension(fullScriptPath);
+        var (fileName, arguments) = BuildScriptCommand(extension, fullScriptPath);
+
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            Console.WriteLine($"Unsupported script type for Docker startup: {fullScriptPath}");
+            return;
+        }
+
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "bash",
-                ArgumentList = { fullScriptPath },
+                FileName = fileName,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false
             }
         };
+        foreach (var argument in arguments)
+        {
+            process.StartInfo.ArgumentList.Add(argument);
+        }
 
         process.OutputDataReceived += (_, e) =>
         {
@@ -141,5 +153,25 @@ public class Program
         {
             Console.WriteLine($"RabbitMQ Docker startup script exited with code {process.ExitCode}.");
         }
+    }
+
+    private static (string FileName, List<string> Arguments) BuildScriptCommand(string extension, string scriptPath)
+    {
+        var arguments = new List<string>();
+
+        if (string.Equals(extension, ".ps1", StringComparison.OrdinalIgnoreCase))
+        {
+            var fileName = OperatingSystem.IsWindows() ? "powershell" : "pwsh";
+            arguments.AddRange(new[] { "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", scriptPath });
+            return (fileName, arguments);
+        }
+
+        if (string.Equals(extension, ".sh", StringComparison.OrdinalIgnoreCase))
+        {
+            arguments.Add(scriptPath);
+            return ("bash", arguments);
+        }
+
+        return (string.Empty, arguments);
     }
 }
