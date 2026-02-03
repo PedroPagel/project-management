@@ -31,8 +31,18 @@ public class Program
         builder.Services.AddLogging();
         builder.Services.AddServices();
         builder.Services.AddSwagger();
+        var rabbitMqOptions = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqOptions>() ?? new RabbitMqOptions();
         builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
-        builder.Services.AddHostedService<UserCreationRabbitMqListener>();
+
+        if (rabbitMqOptions.UseInMemory)
+        {
+            builder.Services.AddSingleton<IUserCreationQueue, InMemoryUserCreationQueue>();
+            builder.Services.AddHostedService<InMemoryUserCreationListener>();
+        }
+        else
+        {
+            builder.Services.AddHostedService<UserCreationRabbitMqListener>();
+        }
 
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
