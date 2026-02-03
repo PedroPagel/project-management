@@ -6,6 +6,7 @@ using Project.Management.Aspire.ServiceDefaults;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Data;
 using Project.Management.Infrastructure.Extensions;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Project.Management.Api;
@@ -21,6 +22,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
+        StartRabbitMqDockerIfConfigured(builder);
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
@@ -82,5 +84,62 @@ public class Program
         app.UseMiddleware<ExceptionHandlerMiddleware>();
 
         app.Run();
+    }
+
+    private static void StartRabbitMqDockerIfConfigured(WebApplicationBuilder builder)
+    {
+        var dockerSection = builder.Configuration.GetSection("Docker");
+        if (!dockerSection.GetValue<bool>("StartRabbitMqOnStartup"))
+        {
+            return;
+        }
+
+        var scriptPath = dockerSection.GetValue<string>("ScriptPath") ?? "scripts/run-rabbitmq.sh";
+        var fullScriptPath = Path.IsPathRooted(scriptPath)
+            ? scriptPath
+            : Path.Combine(builder.Environment.ContentRootPath, scriptPath);
+
+        if (!File.Exists(fullScriptPath))
+        {
+            Console.WriteLine($"Docker startup script not found: {fullScriptPath}");
+            return;
+        }
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "bash",
+                ArgumentList = { fullScriptPath },
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            }
+        };
+
+        process.OutputDataReceived += (_, e) =>
+        {
+            if (!string.IsNullOrWhiteSpace(e.Data))
+            {
+                Console.WriteLine($"[rabbitmq-docker] {e.Data}");
+            }
+        };
+        process.ErrorDataReceived += (_, e) =>
+        {
+            if (!string.IsNullOrWhiteSpace(e.Data))
+            {
+                Console.WriteLine($"[rabbitmq-docker][stderr] {e.Data}");
+            }
+        };
+
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        process.WaitForExit();
+
+        if (process.ExitCode != 0)
+        {
+            Console.WriteLine($"RabbitMQ Docker startup script exited with code {process.ExitCode}.");
+        }
     }
 }
