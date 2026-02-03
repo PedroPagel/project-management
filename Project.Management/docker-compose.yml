@@ -14,6 +14,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      Docker__StartRabbitMqOnStartup: "false"
       RabbitMq__Enabled: "true"
       RabbitMq__UseInMemory: "false"
       RabbitMq__HostName: "rabbitmq"
