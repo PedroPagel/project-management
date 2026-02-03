@@ -14,22 +14,43 @@ Project Management is a .NET solution that exposes a REST API for managing proje
 ## Key Features
 - CRUD endpoints for projects, tasks, users, roles, and project members.
 - AutoMapper DTO mapping between API contracts and domain models.
-- Domain services and repositories for business logic and persistence concerns.
+- Domain services and repositories encapsulating business logic and persistence concerns.
 - Environment-aware database setup:
   - Development uses an in-memory EF Core database and seeds sample data.
   - Non-development environments use PostgreSQL with migrations applied on startup.
 - Swagger/OpenAPI with UI available in development.
 - Hangfire background processing with a recurring maintenance job and optional dashboard in development.
 
-## Technology Stack
+## Architecture & Design
+- Layered architecture with clear separation of concerns.
+- Domain-centric design with explicit boundaries between API, domain, and infrastructure.
+- Emphasis on testability, maintainability, and extensibility.
+
+## Quality & Engineering Practices
+- Automated testing strategy applied where appropriate.
+- Static code analysis and quality gates enforced via **SonarQube** (coverage, complexity, duplication).
+- Consistent code style through shared conventions and analyzers.
+- Focus on maintainable, readable code over framework-specific abstractions.
+
+## CI/CD
+- Continuous Integration implemented with **GitHub Actions**.
+- Automated build and test execution on pull requests.
+- Static analysis and quality validation integrated into the pipeline.
+
+## Tooling
 - .NET / ASP.NET Core
 - Entity Framework Core (InMemory provider for dev, Npgsql for PostgreSQL in production)
 - Hangfire with PostgreSQL storage
 - AutoMapper
 - Swagger/OpenAPI
+- GitHub Actions
+- SonarQube
 - .NET Aspire for service orchestration
 
+> **Note:** AI-assisted tooling (Codex) was used selectively for boilerplate generation and exploratory refactoring. All architectural decisions, code reviews, and final implementations were performed manually.
+
 ## Running the Solution
+
 ### Prerequisites
 - .NET SDK compatible with the solution
 - PostgreSQL (for non-development environments)
@@ -39,28 +60,3 @@ The AppHost coordinates the API, Hangfire, and Redis services.
 
 ```bash
 dotnet run --project Project.Management.Aspire/Project.Management.Aspire.AppHost
-```
-
-### Run the API directly
-```bash
-dotnet run --project src/Project.Management.Api
-```
-
-In development, Swagger UI is available at `/swagger` and the OpenAPI document at `/openapi/v1.json`.
-
-### Run the Hangfire worker directly
-```bash
-dotnet run --project src/Project.Management.Hangfire
-```
-
-In development, the Hangfire dashboard is available at `/hangfire`.
-
-## Configuration
-- Connection strings are read from `ConnectionStrings:DefaultConnection`.
-- In development, the system uses an in-memory database and seeds data at startup.
-- In other environments, migrations run automatically on startup.
-
-## Testing
-```bash
-dotnet test
-```
