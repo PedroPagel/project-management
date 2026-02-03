@@ -2,11 +2,11 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
 using Project.Management.Aspire.ServiceDefaults;
+using Project.Management.Hangfire.Jobs;
 using Project.Management.Infrastructure.Configurations;
 using Project.Management.Infrastructure.Data;
-using Project.Management.Hangfire.Jobs;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
@@ -31,6 +31,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<ProjectMaintenanceJob>();
 
 var app = builder.Build();
+
+app.UseHangfireDashboard("/hangfire");
 
 using (var scope = app.Services.CreateScope())
 {
